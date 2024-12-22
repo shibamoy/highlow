@@ -9,13 +9,6 @@ def starting():
 
 starting()
 
-def compare_choices(choice_a, choice_b):
-    if choice_a['follower_count'] > choice_b['follower_count']:
-        choice_b = random.choice(data)
-    else:
-        choice_a = choice_b
-        choice_b = random.choice(data)
-
 def gameTime():
     choice_a = random.choice(data)
     choice_b =  random.choice(data)
