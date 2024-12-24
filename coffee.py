@@ -29,10 +29,6 @@ resources = {
     "coffee": 100,
 }
 
-quarter = 0.25
-dime = 0.10
-penny = 0.01
-nickle = 0.05
 on = True
 espresso = "espresso"
 latte = "latte"
@@ -57,13 +53,12 @@ def get_cost(coffee):
     return MENU[coffee][price]
 
 def get_payment():
-    paid = 0
     print("Please insert coins to pay. We only accept quarters, dimes, nickles, and pennies.")
-    quarter_count = int(input("How many quarters will you insert:"))
-    dime_count = int(input("How many dimes will you insert:"))
-    nickle_count = int(input("How many nickles will you insert:"))
-    penny_count = int(input("How many pennies will you insert:"))
-    paid = (quarter_count * quarter) + (dime_count * dime) + (nickle_count * nickle) + (penny_count * penny)
+    quarter_count = int(input("How many quarters will you insert:")) * .25
+    dime_count = int(input("How many dimes will you insert:")) * .1
+    nickle_count = int(input("How many nickles will you insert:")) * .05
+    penny_count = int(input("How many pennies will you insert:")) * .01
+    paid = quarter_count + dime_count + nickle_count + penny_count
     return paid
 
 def get_coffee_resources(coffee, liquid):
@@ -95,7 +90,7 @@ while on:
     current_order = startup()
     if current_order == "report":
         report(resources)
-        
+
     elif current_order == "refill":
         resources["water"] = 300
         resources["milk"] = 200
