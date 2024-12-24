@@ -29,6 +29,15 @@ resources = {
     "coffee": 100,
 }
 
+quarter = 0.25
+dime = 0.10
+penny = 0.01
+nickle = 0.05
+on = True
+espresso = "espresso"
+latte = "latte"
+cappuccino = "cappuccino"
+price = "cost"
 #Ask user what they would like
 def startup():
     print("Welcome to the best Coffee Machine!")
@@ -44,22 +53,18 @@ def report(resources):
     print(f"You have milk: {resources["milk"]} ml")
     print(f"You have coffee: {resources["coffee"]} ml")
 
-
-
-#Check resources when there is an order
-#Create deposit for money from user, quarters dimes, penny, nickles
-#check if transaction successful and give change if needed or deny
-#Make coffee
-#Enjoy coffee after drink is made
-#turn off button (exit loop)
-on = True
-
-espresso = "espresso"
-latte = "latte"
-cappuccino = "cappuccino"
-price = "cost"
 def get_cost(coffee):
     return MENU[coffee][price]
+
+def get_payment():
+    paid = 0
+    print("Please insert coins to pay. We only accept quarters, dimes, nickles, and pennies.")
+    quarter_count = int(input("How many quarters will you insert:"))
+    dime_count = int(input("How many dimes will you insert:"))
+    nickle_count = int(input("How many nickles will you insert:"))
+    penny_count = int(input("How many pennies will you insert:"))
+    paid = (quarter_count * quarter) + (dime_count * dime) + (nickle_count * nickle) + (penny_count * penny)
+    return paid
 
 def get_coffee_resources(coffee, liquid):
     if liquid not in MENU[coffee]["ingredients"]:
@@ -78,33 +83,45 @@ def check_resource():
             score += 1
         else:
             print(f"Not enough {resource}. Try again later.")
-    #         return False
-    # return True
     return score
-
 
 def make_drink(drink):
     for resource in resources:
         resources[resource] -= get_coffee_resources(drink, resource)
-
+    print("\n" * 5)
+    print("Enjoy your drink!!!!")
 
 while on:
-    # startup()
     current_order = startup()
     if current_order == "report":
         report(resources)
+        
     elif current_order == "refill":
         resources["water"] = 300
         resources["milk"] = 200
         resources["coffee"] = 100
         print("Success. Machine has been refilled!")
         report(resources)
+    elif current_order == "off":
+        print("Machine turning off....")
+        break
 
     elif check_resource() == 3:
-        make_drink(current_order)
+        total = get_cost(current_order)
+        print(f"Your total is ${total}")
+        paid = get_payment()
+        if total == paid:
+            make_drink(current_order)
+        elif total < paid:
+            change = paid - total
+            change = round(change, 2)
+            print(f"Here is your change ${change}")
+            make_drink(current_order)
+        else:
+            print("Not enough monnies. Try again")
+            continue
+
     else:
         print("Please type refill to refill all.")
-
-
-
-    report(resources)
+        print("Current Report: \n")
+        report(resources)
