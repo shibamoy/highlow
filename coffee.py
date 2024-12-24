@@ -33,13 +33,13 @@ resources = {
 def startup():
     print("Welcome to the best Coffee Machine!")
     order = input("We offer espresso, cappuccino, and latte! Pick from the 3 and type what you want!")
-    if order == "report":
-        report()
-    else:
-        return order
+    # if order == "report":
+    #     report(resources)
+    # else:
+    return order
 
 #Print report on resources
-def report():
+def report(resources):
     print(f"You have water: {resources["water"]} ml")
     print(f"You have milk: {resources["milk"]} ml")
     print(f"You have coffee: {resources["coffee"]} ml")
@@ -62,33 +62,49 @@ def get_cost(coffee):
     return MENU[coffee][price]
 
 def get_coffee_resources(coffee, liquid):
+    if liquid not in MENU[coffee]["ingredients"]:
+        return 0
     return MENU[coffee]["ingredients"][liquid]
 
 def get_resource(liquid):
     return resources[liquid]
 
 def check_resource():
-    for i in resources:
-        check_resource = resources[i]
-        check_coffee = get_coffee_resources(latte, i)
-        if check_resource > check_coffee:
-            continue
+    score = 0
+    for resource in resources:
+        check_resources = resources[resource]
+        check_coffee = get_coffee_resources(current_order, resource)
+        if check_resources >= check_coffee:
+            score += 1
         else:
-            print(f"Not enough {i}. Try again later.")
-            return False
+            print(f"Not enough {resource}. Try again later.")
+    #         return False
+    # return True
+    return score
+
+
+def make_drink(drink):
+    for resource in resources:
+        resources[resource] -= get_coffee_resources(drink, resource)
+
 
 while on:
     # startup()
     current_order = startup()
-    if current_order =="latte":
-        print("Preparing order...Please wait")
-        #checking resources
-        check_resource()
-        if check_resource() != False:
-            print("Here is your drink! ()]")
-            for i in resources:
-                resources[i] -= get_coffee_resources(latte, i)
-        else:
-            print("Please refill machine.")
+    if current_order == "report":
+        report(resources)
+    elif current_order == "refill":
+        resources["water"] = 300
+        resources["milk"] = 200
+        resources["coffee"] = 100
+        print("Success. Machine has been refilled!")
+        report(resources)
 
-        report()
+    elif check_resource() == 3:
+        make_drink(current_order)
+    else:
+        print("Please type refill to refill all.")
+
+
+
+    report(resources)
